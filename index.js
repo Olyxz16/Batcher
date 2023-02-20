@@ -10,6 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 const { parse } = require("./src/parser.js");
+const { organizeByDependencies, load } = require("./src/loader.js");
 
 const defaultFileName = "batcher.yml";
 
@@ -23,7 +24,11 @@ const defaultFileName = "batcher.yml";
     }
     var yamlString = fs.readFileSync(filePath, 'utf8');
 
+    // vérifier que le format soit respecté
     var options = parse(yamlString);
+    //options = resolvePackages(options);
+    options = organizeByDependencies(options);
+    console.log(options);
+    //load(options);
     
-
 })(); 
