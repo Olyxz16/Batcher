@@ -9,13 +9,16 @@
 const fs = require("fs");
 const path = require("path");
 
-const { parse } = require("./src/parser.js");
-const { organizeByDependencies, load } = require("./src/loader.js");
+const { parse } = require("./src/parser/parser.js");
+const { validate } = require("./src/parser/validator.js");
+const { resolvePackages, resolveOptions} = require("./src/resolver/optionsSolver.js");
+const { resolveDependencies } = require("./src/resolver/dependencySolver.js");
+const { load } = require("./src/loader/loader.js")
 
 const defaultFileName = "batcher.yml";
 
 
-(() => {
+(async () => {
     
     var args = process.argv;
     var filePath = path.join(__dirname, args[2] || defaultFileName);
@@ -26,9 +29,15 @@ const defaultFileName = "batcher.yml";
 
     // vérifier que le format soit respecté
     var options = parse(yamlString);
-    //options = resolvePackages(options);
-    options = organizeByDependencies(options);
+    
+    validate(options);
+    options = await resolvePackages(options);
+    options = resolveOptions(options);
+
+    options["items"] = resolveDependencies(options);
+    
     console.log(options);
-    //load(options);
+
+    var results = await load(options);
     
 })(); 

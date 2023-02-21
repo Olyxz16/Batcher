@@ -1,6 +1,4 @@
-
-
-function organizeByDependencies(options) {
+function resolveDependencies(options) {
     var items = options.items;
     var result = {};
     for(var name in items) {
@@ -10,6 +8,7 @@ function organizeByDependencies(options) {
             for(var index in dependencies) {
                 var dep = dependencies[index];
                 result[dep] = items[dep];
+                delete items[dep];
             }
             if(result[name] == undefined) {
                 result[name] = items[name];
@@ -21,17 +20,4 @@ function organizeByDependencies(options) {
     return result;
 }
 
-function load(options) {
-
-}
-
-
-const loadStates = {
-    loaded: "loaded",
-    already: "already",
-    failed: "failed"
-}
-
-exports.loadStates = loadStates;
-exports.load = load;
-exports.organizeByDependencies =organizeByDependencies;
+exports.resolveDependencies = resolveDependencies;
