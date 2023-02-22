@@ -1,12 +1,12 @@
 function resolveDependencies(options) {
-    var items = options.items;
-    var result = {};
-    for(var name in items) {
-        var dependencies = items[name].depends || [];
-        var isAddable = dependencies.every(v => options.items[v] != undefined);
+    let items = options.items;
+    let result = {};
+    for(let name in items) {
+        let dependencies = items[name].depends || [];
+        let isAddable = dependencies.every(v => options.items[v] != undefined);
         if(isAddable) {
-            for(var index in dependencies) {
-                var dep = dependencies[index];
+            for(let index in dependencies) {
+                let dep = dependencies[index];
                 result[dep] = items[dep];
                 delete items[dep];
             }

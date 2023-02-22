@@ -11,8 +11,8 @@ const path = require("path");
 
 const { parse } = require("./src/parser/parser.js");
 const { validate } = require("./src/parser/validator.js");
-const { resolvePackages, resolveOptions} = require("./src/resolver/optionsSolver.js");
-const { resolveDependencies } = require("./src/resolver/dependencySolver.js");
+const { resolvePackages, resolveOptions} = require("./src/solver/optionsSolver.js");
+const { resolveDependencies } = require("./src/solver/dependencySolver.js");
 const { load } = require("./src/loader/loader.js")
 
 const defaultFileName = "batcher.yml";
@@ -20,24 +20,21 @@ const defaultFileName = "batcher.yml";
 
 (async () => {
     
-    var args = process.argv;
-    var filePath = path.join(__dirname, args[2] || defaultFileName);
+    let args = process.argv;
+    let filePath = path.join(__dirname, args[2] || defaultFileName);
     if(!fs.existsSync(filePath)) {
         throw new Error("File does not exist: " + filePath);
     }
-    var yamlString = fs.readFileSync(filePath, 'utf8');
+    let yamlString = fs.readFileSync(filePath, 'utf8');
 
-    // vérifier que le format soit respecté
-    var options = parse(yamlString);
-    
+    let options = parse(yamlString);
     validate(options);
     options = await resolvePackages(options);
     options = resolveOptions(options);
 
     options["items"] = resolveDependencies(options);
-    
-    console.log(options);
 
-    var results = await load(options);
+    let result = await load(options);
+    console.log(result);
     
 })(); 
