@@ -1,6 +1,4 @@
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+const { download } = require("./downloader.js");
 
 async function loadItems(options) {
     return new Promise((resolve, reject) => {
@@ -33,28 +31,5 @@ async function loadAux(options, fulfilled, resolve) {
 }
 
 
-async function download(item) {
-
-    let source = item["source"];
-    let downloadFolder = item["download-folder"];
-    let installFolder = item["install-folder"];
-    let fileName = item["file-name"];
-    let target = path.join(downloadFolder, fileName);
-
-    return new Promise((resolve, reject) => {
-      axios({
-        url: source,
-        method: 'GET',
-        responseType: 'stream'
-      })
-        .then(response => {
-          response.data.pipe(fs.createWriteStream(target));
-          response.data.on('end', () => resolve());
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  }
 
 exports.loadItems = loadItems;
