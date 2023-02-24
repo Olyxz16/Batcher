@@ -3,22 +3,15 @@ async function resolveTypes(options) {
     for(let name in items) {
         let item = items[name];
         let source = item.source;
-        if(isSourceExecutable(source)) {
-            item["type"] = "executable";
-        } else if(isSourceRepository(source)) {
+        if(isSourceRepository(source)) {
             item["type"] = "repository";
         } else if(isSourceURL(source)) {
-            item["type"] = "source";
+            item["type"] = "file";
         } else {
             item["type"] = "package";
         }
     }
     return options;
-}
-
-function isSourceExecutable(source) {
-    let regex = new RegExp("http?s://.*\.exe");
-    return regex.test(source);
 }
 function isSourceRepository(source) {
     let regex = new RegExp("http?s://.*\.git");

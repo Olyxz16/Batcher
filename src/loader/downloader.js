@@ -8,11 +8,8 @@ async function download(item) {
     let type = item["type"];
 
     switch(type) {
-      case "executable" : {
-          downloadExecutable(item).then(() => resolve());
-      }; break;
-      case "source": {
-        downloadSource(item).then(() => resolve());
+      case "file": {
+        downloadFile(item).then(() => resolve());
       }; break;
       case "repository": {
           downloadRepository(item).then(() => resolve());
@@ -25,34 +22,7 @@ async function download(item) {
   });
 }
 
-async function downloadExecutable(item) {
-
-  let source = item["source"];
-  let downloadFolder = item["download-folder"];
-  let fileName = item["file-name"];
-  let target = path.join(downloadFolder, fileName);
-
-  if(!fs.existsSync(downloadFolder)) {
-    throw new Error("Download folder " + downloadFolder + " does not exist.");
-  }
-
-  return new Promise((resolve, reject) => {
-    axios({
-      url: source,
-      method: 'GET',
-      responseType: 'stream'
-    })
-      .then(response => {
-        response.data.pipe(fs.createWriteStream(target));
-        response.data.on('end', () => resolve());
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
-async function downloadSource(item) {
+async function downloadFile(item) {
 
   let source = item["source"];
   let downloadFolder = item["download-folder"];
