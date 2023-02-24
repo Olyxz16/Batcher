@@ -2,6 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const decompress = require('decompress');
+const shell = require('shelljs');
 
 async function download(item) {
   return new Promise((resolve, reject) => {
@@ -51,11 +52,15 @@ async function downloadFile(item) {
               if (!fs.existsSync(targetFolder)){
                 fs.mkdirSync(targetFolder);
               }
-              decompress(target, targetFolder);
+              decompress(target, targetFolder)
+              .then(() => {
+                fs.rmSync(target);
+                resolve();
+              });
             } else {
-              fs.renameSync(downloadFolder, installFolder);
+              fs.renameSync(target, path.join(installFolder, fileName));
+              resolve();
             }
-            resolve();
           });
         })
         .catch(error => {
@@ -71,27 +76,28 @@ async function downloadRepository(item) {
 
   let source = item["source"];
   let downloadFolder = item["download-folder"];
+  let installFolder = item["install-folder"];
   let fileName = item["file-name"];
-  let target = path.join(downloadFolder, fileName);
 
-  if(!fs.existsSync(downloadFolder)) {
-    throw new Error("Download folder " + downloadFolder + " does not exist.");
+  if(isGitInstalled()) {
+    var cwd = process.cwd();
+    shell.cd(installFolder);
+    shell.exec("git clone " + source);
+    shell.cd(cwd);
+  } else {
+    source = source.replace(".git",  "/archive/refs/heads/main.zip");
+    item["source"] = source;
+    item["type"] = "file";
+    item["file-name"] = fileName.replace(".git", ".zip");
+    downloadFile(item);
   }
 
-  return new Promise((resolve, reject) => {
-    axios({
-      url: source,
-      method: 'GET',
-      responseType: 'stream'
-    })
-      .then(response => {
-        response.data.pipe(fs.createWriteStream(target));
-        response.data.on('end', () => resolve());
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
+}
+async function isGitInstalled() {
+  if (!shell.which('git')) {
+    shell.echo('Sorry, this script requires git');
+    shell.exit(1);
+  }
 }
 
 
