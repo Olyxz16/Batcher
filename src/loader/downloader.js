@@ -93,10 +93,8 @@ async function downloadRepository(item) {
 
 }
 async function isGitInstalled() {
-  if (!shell.which('git')) {
-    shell.echo('Sorry, this script requires git');
-    shell.exit(1);
-  }
+  var result = child_process.execSync("where git");
+  return fs.existsSync(result);
 }
 
 
