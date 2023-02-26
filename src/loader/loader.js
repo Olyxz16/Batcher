@@ -16,20 +16,25 @@ async function loadAux(options, fulfilled, rejected, processing, resolve) {
     processing.push(tag);
     download(item)
     .then((result) => {
-      console.log("fulfilled : " + tag);
       fulfilled.push(tag);
       processing.splice(processing.indexOf(tag), 1);
       if(Object.keys(options["items"]).length === 0 && processing.length === 0) {
-        resolve(fulfilled);
+        resolve(mapResult(fulfilled, rejected));
         return;
       }
       loadAux(options, fulfilled, resolve)})
     .catch((error) => {
-      console.log("rejected : " + tag);
       rejected.push(tag);
       processing.splice(processing.indexOf(tag), 1);
     });
   }
+}
+
+function mapResult(fulfilled, rejected) {
+  var map = {};
+  fulfilled.every(tag => map[tag] = "fulfilled");
+  rejected.every(tag => map[tag] = "rejected");
+  return map;
 }
 
 exports.loadItems = loadItems;
