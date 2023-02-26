@@ -16,7 +16,7 @@ async function loadAux(options, fulfilled, rejected, processing, resolve) {
     processing.push(tag);
     download(item)
     .then((result) => {
-      console.log("fulfilled");
+      console.log("fulfilled : " + tag);
       fulfilled.push(tag);
       processing.splice(processing.indexOf(tag), 1);
       if(Object.keys(options["items"]).length === 0 && processing.length === 0) {
@@ -25,7 +25,7 @@ async function loadAux(options, fulfilled, rejected, processing, resolve) {
       }
       loadAux(options, fulfilled, resolve)})
     .catch((error) => {
-      console.log("rejected");
+      console.log("rejected : " + tag);
       rejected.push(tag);
       processing.splice(processing.indexOf(tag), 1);
     });
