@@ -79,7 +79,7 @@ async function downloadRepository(item) {
   }
 
   if(isGitInstalled()) {
-    child_process.execSync("cd " + installFolder + " && git clone --depth 1 " + source);
+    child_process.execSync("cd " + installFolder + " && git clone --depth 1 " + source, {stdio: "ignore"});
   } else {
     let branchURL = source.replace("https://github.com/", "https://api.github.com/repos/");
     branchURL = path.join(path.parse(branchURL).dir, path.parse(branchURL).name);
