@@ -60,7 +60,8 @@ async function downloadFile(item) {
             fs.renameSync(target, path.join(installFolder, fileName));
             resolve();
           }
-        });
+        })
+        .catch(err => reject(err));
     });
 }
 function isFileArchive(path) {
@@ -83,7 +84,6 @@ async function downloadRepository(item) {
     let branchURL = source.replace("https://github.com/", "https://api.github.com/repos/");
     branchURL = path.join(path.parse(branchURL).dir, path.parse(branchURL).name);
     const default_branch = (await axios.get(branchURL)).data.default_branch;
-
     source = source.replace(".git",  "/archive/refs/heads/" + default_branch + ".zip");
     item["source"] = source;
     item["type"] = "file";
