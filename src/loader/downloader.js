@@ -17,7 +17,7 @@ async function download(item) {
       }; break;
       case "package": {
           downloadPackage(item).then(() => resolve());
-      }
+      }; break;
       default: throw new Error("Unknown type.");
     };
   });
