@@ -7,8 +7,6 @@ const { resolveOptions, resolveTypes } = require("./src/solver/optionsSolver.js"
 const { resolveDependencies } = require("./src/solver/dependencySolver.js");
 const { loadItems } = require("./src/loader/loader.js")
 
-const axios = require("axios");
-
 const defaultFileName = "batcher.yml";
 
 (async () => {

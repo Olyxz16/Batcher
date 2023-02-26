@@ -4,7 +4,7 @@ const path = require('path');
 const decompress = require('decompress');
 const child_process = require('child_process');
 
-async function download(item) {
+async function downloadItems(item) {
   return new Promise((resolve, reject) => {
     let type = item["type"];
     switch(type) {
@@ -44,7 +44,7 @@ async function downloadFile(item) {
   }
 
   return new Promise((resolve, reject) => {
-      dlURL(source, target)
+      streamURLToFile(source, target)
         .then(() => {
           if(isFileArchive(fileName)) {
             var targetFolder = path.join(installFolder, path.parse(fileName).name);
@@ -141,7 +141,7 @@ async function downloadPackage(item) {
     for(let index in filesURL) {
       let url = filesURL[index];
       var fileDownloadPath = path.join(target, path.parse(url).base);
-      promises.push(dlURL(url, fileDownloadPath));
+      promises.push(streamURLToFile(url, fileDownloadPath));
     }
     Promise.all(promises).then(() => {
       var absoluteInstallFolderPath = path.join(path.resolve(installFolder), packageName);
@@ -152,7 +152,7 @@ async function downloadPackage(item) {
 }
 
 
-function dlURL(url, target) {
+function streamURLToFile(url, target) {
   return new Promise((resolve, reject) => {
     axios({
       url: url,
@@ -172,4 +172,4 @@ function dlURL(url, target) {
 }
 
 
-exports.download = download;
+exports.downloadItems = downloadItems;

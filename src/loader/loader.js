@@ -1,4 +1,4 @@
-const { download } = require("./downloader.js");
+const { downloadItems } = require("./downloader.js");
 
 async function loadItems(options) {
     return new Promise((resolve, reject) => {
@@ -14,7 +14,7 @@ async function loadAux(options, fulfilled, rejected, processing, resolve) {
     }
     delete options["items"][tag];
     processing.push(tag);
-    download(item)
+    downloadItems(item)
     .then((result) => {
       fulfilled.push(tag);
       processing.splice(processing.indexOf(tag), 1);
